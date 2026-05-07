@@ -3,170 +3,374 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Introducing ReadQraft</title>
+    <title>Introducing ReadQraft: FASTQ QC without terminal fear</title>
     <meta name="description" content="ReadQraft is a local desktop app for FASTQ quality control, trimming, MultiQC reporting, and reproducibility packages." />
+    <meta property="og:title" content="Introducing ReadQraft" />
+    <meta property="og:description" content="FASTQ QC and trimming without terminal fear. Local, reproducible, and built for biologists." />
+    <meta property="og:type" content="website" />
     <style>
       :root {
-        color-scheme: light dark;
-        --bg: #f6f8f9;
+        color-scheme: light;
+        --ink: #111827;
+        --muted: #52606d;
+        --line: #dce5ea;
         --paper: #ffffff;
-        --ink: #172027;
-        --muted: #63717d;
-        --line: #dce4e8;
-        --accent: #126c69;
-        --accent-2: #315d9d;
+        --teal: #0f766e;
+        --blue: #2456a6;
+        --gold: #c18416;
+        --coral: #d85c4a;
+        --mint: #dff7ef;
+        --sky: #e7f0ff;
+        --sun: #fff1cb;
+        --rose: #ffe8e2;
+        --bg: #f7fafb;
       }
       * { box-sizing: border-box; }
       body {
         margin: 0;
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: var(--bg);
+        background:
+          radial-gradient(circle at top left, rgba(15, 118, 110, .18), transparent 30rem),
+          radial-gradient(circle at top right, rgba(216, 92, 74, .15), transparent 28rem),
+          linear-gradient(180deg, #fbfdff 0%, var(--bg) 42%, #ffffff 100%);
         color: var(--ink);
       }
-      header {
-        background: #e9f1f1;
-        border-bottom: 1px solid var(--line);
-      }
-      .wrap {
-        width: min(960px, calc(100% - 36px));
-        margin: 0 auto;
-      }
+      a { color: var(--blue); font-weight: 750; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+      .wrap { width: min(1120px, calc(100% - 36px)); margin: 0 auto; }
       .hero {
-        padding: 72px 0 56px;
+        min-height: 92vh;
+        display: grid;
+        align-items: center;
+        padding: 54px 0 36px;
       }
-      .eyebrow {
-        color: var(--accent);
-        font-weight: 750;
-        letter-spacing: 0;
-        margin-bottom: 14px;
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(330px, .95fr);
+        gap: 44px;
+        align-items: center;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid rgba(15, 118, 110, .28);
+        background: rgba(255, 255, 255, .72);
+        border-radius: 999px;
+        color: var(--teal);
+        font-weight: 800;
+        padding: 8px 13px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--teal);
+        box-shadow: 0 0 0 6px rgba(15, 118, 110, .12);
       }
       h1 {
-        font-size: clamp(40px, 7vw, 72px);
-        line-height: .98;
+        font-size: clamp(44px, 7vw, 84px);
+        line-height: .94;
         letter-spacing: 0;
-        margin: 0 0 18px;
+        margin: 20px 0;
       }
       .lede {
-        font-size: 21px;
-        line-height: 1.55;
         color: var(--muted);
+        font-size: clamp(18px, 2vw, 23px);
+        line-height: 1.55;
         max-width: 760px;
       }
-      main {
-        padding: 42px 0 72px;
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
       }
-      article {
-        background: var(--paper);
-        border: 1px solid var(--line);
+      .button {
+        min-height: 46px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         border-radius: 8px;
-        padding: clamp(24px, 4vw, 44px);
+        padding: 12px 16px;
+        border: 1px solid var(--line);
+        background: var(--paper);
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .button.primary {
+        background: var(--teal);
+        color: #ffffff;
+        border-color: var(--teal);
+      }
+      .screen {
+        border: 1px solid rgba(17, 24, 39, .14);
+        border-radius: 18px;
+        background: #13212a;
+        box-shadow: 0 24px 70px rgba(17, 24, 39, .20);
+        overflow: hidden;
+      }
+      .screen-top {
+        display: flex;
+        gap: 7px;
+        padding: 14px;
+        border-bottom: 1px solid rgba(255,255,255,.10);
+      }
+      .light { width: 11px; height: 11px; border-radius: 50%; background: var(--coral); }
+      .light:nth-child(2) { background: var(--gold); }
+      .light:nth-child(3) { background: #35b779; }
+      .workflow {
+        padding: 22px;
+        color: #d8e7ea;
+      }
+      .workflow h2 {
+        margin: 0 0 18px;
+        font-size: 20px;
+        color: #ffffff;
+      }
+      .step {
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        gap: 12px;
+        align-items: start;
+        padding: 13px 0;
+        border-top: 1px solid rgba(255,255,255,.10);
+      }
+      .num {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background: rgba(89, 207, 194, .18);
+        color: #8df0df;
+        font-weight: 850;
+      }
+      .step strong { display: block; color: #ffffff; }
+      .step span { color: #a9c0c7; font-size: 14px; line-height: 1.45; }
+      section { padding: 34px 0; }
+      .section-title {
+        max-width: 760px;
+        margin-bottom: 22px;
+      }
+      .kicker {
+        color: var(--coral);
+        font-weight: 850;
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: .08em;
       }
       h2 {
-        margin-top: 36px;
-        font-size: 26px;
+        font-size: clamp(30px, 4vw, 48px);
+        line-height: 1.05;
         letter-spacing: 0;
+        margin: 8px 0 12px;
       }
-      h2:first-child { margin-top: 0; }
-      p, li {
+      p {
         color: var(--muted);
         line-height: 1.75;
-        font-size: 16px;
+        font-size: 17px;
       }
-      strong { color: var(--ink); }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 20px;
+        min-height: 210px;
+      }
+      .card:nth-child(1) { background: var(--mint); }
+      .card:nth-child(2) { background: var(--sky); }
+      .card:nth-child(3) { background: var(--sun); }
+      .card:nth-child(4) { background: var(--rose); }
+      .card h3 {
+        margin: 0 0 10px;
+        font-size: 21px;
+      }
+      .card p { margin: 0; font-size: 15.5px; }
+      .story {
+        display: grid;
+        grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+        gap: 32px;
+        align-items: start;
+      }
+      .quote {
+        position: sticky;
+        top: 24px;
+        background: #111827;
+        color: #ffffff;
+        border-radius: 16px;
+        padding: 26px;
+      }
+      .quote p {
+        color: #d8e1e7;
+        margin: 0;
+        font-size: 20px;
+        line-height: 1.55;
+      }
       .term {
         color: var(--ink);
-        font-weight: 700;
+        font-weight: 800;
       }
       .bracket {
         color: var(--muted);
-        font-weight: 500;
+        font-weight: 550;
       }
-      .callout {
-        border-left: 4px solid var(--accent);
-        background: #eef6f5;
-        padding: 16px 18px;
-        border-radius: 6px;
-        margin: 24px 0;
+      .band {
+        background: #10212a;
+        color: #ffffff;
+        margin-top: 38px;
+        padding: 44px 0;
       }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 14px;
-        margin: 20px 0;
+      .band p { color: #b9cbd2; }
+      .band .cards .card {
+        background: rgba(255,255,255,.07);
+        border-color: rgba(255,255,255,.14);
       }
-      .card {
+      .band .card h3 { color: #ffffff; }
+      .band .term { color: #ffffff; }
+      .cta {
         border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 16px;
-        background: #fbfcfd;
-      }
-      .card h3 {
-        margin: 0 0 8px;
-        font-size: 17px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #e7f8f3 0%, #eaf0ff 55%, #fff0d6 100%);
+        padding: clamp(24px, 5vw, 48px);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 28px;
+        align-items: center;
       }
       footer {
-        margin-top: 26px;
+        padding: 32px 0 48px;
         color: var(--muted);
         font-size: 14px;
       }
-      a { color: var(--accent-2); font-weight: 700; }
-      @media (prefers-color-scheme: dark) {
-        :root { --bg: #12171b; --paper: #1a2228; --ink: #edf4f6; --muted: #a7b4bd; --line: #33414a; }
-        header { background: #172526; }
-        .card, .callout { background: #162026; }
+      @media (max-width: 860px) {
+        .hero { min-height: auto; }
+        .hero-grid, .story, .cta { grid-template-columns: 1fr; }
+        .cards { grid-template-columns: 1fr; }
+        .quote { position: static; }
       }
     </style>
   </head>
   <body>
-    <header>
-      <div class="wrap hero">
-        <div class="eyebrow">ReadQraft 0.1.0 MVP</div>
-        <h1>FASTQ QC and trimming without terminal fear.</h1>
-        <p class="lede">ReadQraft is a privacy-preserving desktop app for sequencing read quality control, trimming, MultiQC reporting, and reproducibility documentation on macOS and Windows.</p>
+    <header class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="badge"><span class="dot"></span> ReadQraft 0.1.0 is live</div>
+          <h1>FASTQ QC should not require terminal courage.</h1>
+          <p class="lede">ReadQraft is a local desktop application for <strong>FASTQ quality control</strong>, trimming, MultiQC reporting, and reproducibility packages. It is built for biologists who need rigorous sequencing QC without turning every analysis into a command-line exam.</p>
+          <div class="actions">
+            <a class="button primary" href="https://github.com/mbaffour/ReadQraft">View the repository</a>
+            <a class="button" href="https://github.com/mbaffour/ReadQraft/releases/tag/v0.1.0">See the first release</a>
+            <a class="button" href="./">Read the docs</a>
+          </div>
+        </div>
+        <div class="screen" aria-label="ReadQraft workflow preview">
+          <div class="screen-top"><span class="light"></span><span class="light"></span><span class="light"></span></div>
+          <div class="workflow">
+            <h2>Local QC workflow</h2>
+            <div class="step"><div class="num">1</div><div><strong>FASTQ files</strong><span>[raw sequencing read files] stay on your computer.</span></div></div>
+            <div class="step"><div class="num">2</div><div><strong>FastQC</strong><span>[checks sequencing read quality] runs before and after trimming.</span></div></div>
+            <div class="step"><div class="num">3</div><div><strong>fastp / Cutadapt</strong><span>[software used to clean reads] removes low-quality sequence and adapters.</span></div></div>
+            <div class="step"><div class="num">4</div><div><strong>MultiQC</strong><span>[combines QC reports into one summary] creates the final report.</span></div></div>
+            <div class="step"><div class="num">5</div><div><strong>Reproducibility ZIP</strong><span>Commands, versions, checksums, logs, and methods text are saved.</span></div></div>
+          </div>
+        </div>
       </div>
     </header>
-    <main class="wrap">
-      <article>
-        <h2>Why ReadQraft Exists</h2>
-        <p>Many biologists need reliable <span class="term">FASTQ quality control <span class="bracket">[checking raw sequencing read quality]</span></span> and <span class="term">adapter trimming <span class="bracket">[removing leftover sequencing adapter sequences]</span></span>, but the command line can make a routine QC task feel risky. ReadQraft wraps established bioinformatics tools in a local desktop workflow while preserving proper scientific terminology.</p>
 
-        <div class="callout">
-          <strong>Reads stay local.</strong> ReadQraft runs on the user’s computer. FASTQ files are not uploaded to a cloud service.
+    <main>
+      <section class="wrap">
+        <div class="section-title">
+          <div class="kicker">Why This Matters</div>
+          <h2>The terminal should not be the gatekeeper for good sequencing practice.</h2>
+          <p>FASTQ QC is not optional housekeeping. It is the first checkpoint between expensive sequencing and every downstream biological claim. If quality control is intimidating, skipped, inconsistently documented, or trapped in a lab member’s shell history, the science becomes harder to trust and harder to reproduce.</p>
         </div>
-
-        <h2>What The MVP Does</h2>
-        <div class="grid">
+        <div class="cards">
           <div class="card">
-            <h3>Raw QC</h3>
-            <p><span class="term">FastQC <span class="bracket">[checks sequencing read quality]</span></span> runs before trimming.</p>
+            <h3>Accessibility without dilution</h3>
+            <p>ReadQraft keeps real terms like <span class="term">Phred quality threshold <span class="bracket">[base-call confidence cutoff]</span></span> and explains them in place, instead of hiding the science behind vague labels.</p>
           </div>
           <div class="card">
-            <h3>Trimming</h3>
-            <p><span class="term">fastp</span> is used where available; <span class="term">Cutadapt</span> provides a Windows-native fallback.</p>
+            <h3>Privacy by default</h3>
+            <p>Sequencing reads can be sensitive. ReadQraft runs locally on macOS and Windows so data does not need to leave the lab computer for routine QC and trimming.</p>
           </div>
           <div class="card">
-            <h3>Combined Reports</h3>
-            <p><span class="term">MultiQC <span class="bracket">[combines QC reports into one summary]</span></span> aggregates reports.</p>
-          </div>
-          <div class="card">
-            <h3>Reproducibility</h3>
-            <p>Commands, versions, checksums, logs, methods text, and manifests are packaged for publication workflows.</p>
+            <h3>Reproducibility baked in</h3>
+            <p>Every run records commands, tool versions, parameters, checksums, logs, methods text, and a manifest. The point is not just to get clean reads, but to know exactly how they were produced.</p>
           </div>
         </div>
+      </section>
 
-        <h2>Designed For Clarity, Not Oversimplification</h2>
-        <p>The interface uses real terms such as <span class="term">Phred quality threshold <span class="bracket">[base-call confidence cutoff]</span></span>, <span class="term">minimum read length <span class="bracket">[shortest read kept after trimming]</span></span>, and <span class="term">paired-end reads <span class="bracket">[R1 and R2 read files from the same sample]</span></span>. ReadQraft explains terms without replacing them with vague metaphors.</p>
+      <section class="wrap story">
+        <aside class="quote">
+          <p>ReadQraft is for the moment when someone has real sequencing data, real scientific questions, and one very understandable thought: “I do not want to break this by typing the wrong command.”</p>
+        </aside>
+        <div>
+          <div class="kicker">The Problem</div>
+          <h2>Routine QC is too often fragile, invisible, or person-dependent.</h2>
+          <p>A typical FASTQ workflow asks users to remember tool names, command flags, file-pairing conventions, output folders, thread counts, report locations, and version capture. Experienced bioinformaticians can manage that. But many labs rely on students, technicians, collaborators, or occasional users who need the same rigor without the same terminal fluency.</p>
+          <p>The result is a quiet reproducibility gap. Two people can process the same reads with slightly different parameters. A methods section can say “reads were trimmed” without preserving the exact command. A missing R2 file can become a downstream mystery. A failed tool can look like a wall of terminal noise instead of a fixable setup problem.</p>
+          <p>ReadQraft is designed to make the careful path the easy path: select files, confirm detected pairs, choose Simple Mode or Advanced Mode, run local tools, watch progress, and download a reproducibility package.</p>
+        </div>
+      </section>
 
-        <h2>Platform Strategy</h2>
-        <p>ReadQraft bundles a local tool environment with the desktop app. macOS builds include FastQC, fastp, Cutadapt, MultiQC, and OpenJDK. Windows builds use FastQC, Cutadapt, MultiQC, Python, and OpenJDK because native Windows fastp packages are not currently available through Bioconda. Every run records the actual trimming engine used.</p>
+      <section class="band">
+        <div class="wrap">
+          <div class="section-title">
+            <div class="kicker">What It Does</div>
+            <h2>Publication-grade outputs from a desktop workflow.</h2>
+            <p>The MVP wraps established tools while keeping the workflow local and inspectable.</p>
+          </div>
+          <div class="cards">
+            <div class="card">
+              <h3>Quality checks</h3>
+              <p><span class="term">FastQC <span class="bracket">[checks sequencing read quality]</span></span> runs on raw and trimmed reads.</p>
+            </div>
+            <div class="card">
+              <h3>Trimming engines</h3>
+              <p>macOS uses fastp where available. Windows uses Cutadapt as the native trimming path when fastp is not available.</p>
+            </div>
+            <div class="card">
+              <h3>Combined reports</h3>
+              <p><span class="term">MultiQC <span class="bracket">[combines QC reports into one summary]</span></span> creates a single project-level QC report.</p>
+            </div>
+            <div class="card">
+              <h3>Methods text</h3>
+              <p>ReadQraft generates a methods paragraph from the actual tools, versions, and parameters used.</p>
+            </div>
+            <div class="card">
+              <h3>Checksums</h3>
+              <p>Input and output SHA256 checksums help confirm file integrity and support reproducible handoff.</p>
+            </div>
+            <div class="card">
+              <h3>Logs and manifests</h3>
+              <p>Command logs, version logs, session info, and manifest JSON are saved automatically.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <h2>What Comes Next</h2>
-        <p>The next milestones are Windows installer verification, signed and notarized releases, deeper report parsing, tool setup UI polish, and example datasets. The MVP already demonstrates the core promise: local FASTQ QC, trimming, reports, and reproducibility documentation without requiring users to run terminal commands after installation.</p>
-
-        <footer>
-          ReadQraft is open source. See the repository README for setup, packaging, and development details.
-        </footer>
-      </article>
+      <section class="wrap">
+        <div class="cta">
+          <div>
+            <div class="kicker">Open Source MVP</div>
+            <h2>Try it, inspect it, and help shape it.</h2>
+            <p>ReadQraft 0.1.0 is an MVP source release. The next milestones are verified Windows installer artifacts, signed macOS builds, deeper report parsing, and a smoother tool setup experience. The foundation is now public: a local desktop FASTQ QC workflow that treats beginner-friendliness and scientific accuracy as partners, not opposites.</p>
+          </div>
+          <div class="actions">
+            <a class="button primary" href="https://github.com/mbaffour/ReadQraft">GitHub repo</a>
+            <a class="button" href="https://github.com/mbaffour/ReadQraft/releases/tag/v0.1.0">Release notes</a>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <footer class="wrap">
+      Share this page: <a href="https://mbaffour.github.io/ReadQraft/blogpost.html">https://mbaffour.github.io/ReadQraft/blogpost.html</a>
+    </footer>
   </body>
 </html>
