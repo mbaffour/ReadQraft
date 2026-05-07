@@ -1,0 +1,54 @@
+{
+  "name": "readqraft-desktop",
+  "version": "0.1.0",
+  "description": "Desktop FASTQ quality-control and trimming app for ReadQraft.",
+  "author": "ReadQraft contributors",
+  "private": true,
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "electron electron/main.cjs --dev",
+    "package": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "33.3.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "org.readqraft.app",
+    "productName": "ReadQraft",
+    "files": [
+      "electron/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../frontend/dist",
+        "to": "frontend",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "../backend/dist",
+        "to": "backend",
+        "filter": ["readqraft-backend*"]
+      },
+      {
+        "from": "../.tools/readqraft-bio.tar.gz",
+        "to": "tools/readqraft-bio.tar.gz",
+        "filter": ["readqraft-bio.tar.gz"]
+      },
+      {
+        "from": "../.tools/tools-manifest.json",
+        "to": "tools/tools-manifest.json",
+        "filter": ["tools-manifest.json"]
+      }
+    ],
+    "mac": {
+      "target": ["dmg"],
+      "category": "public.app-category.education"
+    },
+    "win": {
+      "target": ["nsis", "portable"]
+    }
+  }
+}

@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+desktop/node_modules/
+
+# Local bioinformatics tool bundles and generated package outputs
+.tools/
+backend/build/
+backend/dist/
+frontend/dist/
+desktop/dist/
+
+# Python caches and local envs
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# ReadQraft local analysis data
+.readqraft/
+projects/
+*.fastq
+*.fq
+*.fastq.gz
+*.fq.gz
+
+# Logs and local OS files
+*.log
+.DS_Store
+
+# Electron/builder local artifacts
+*.dmg
+*.exe
+*.msi
+*.AppImage

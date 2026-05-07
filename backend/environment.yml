@@ -1,0 +1,14 @@
+name: readqraft-backend
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - fastqc
+  - fastp
+  - multiqc
+  - cutadapt
+  - pip
+  - pip:
+      - fastapi==0.115.6
+      - uvicorn[standard]==0.34.0
+      - python-multipart==0.0.20

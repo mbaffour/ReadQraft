@@ -1,0 +1,20 @@
+{
+  "name": "readqraft",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "desktop"
+  ],
+  "scripts": {
+    "frontend:dev": "npm --workspace frontend run dev --",
+    "frontend:build": "npm --workspace frontend run build",
+    "desktop:dev": "npm --workspace desktop run dev",
+    "desktop:dist": "npm --workspace desktop run dist",
+    "tools:install": "node scripts/install-tools.mjs",
+    "tools:package": "node scripts/package-tools.mjs",
+    "backend:build": "cd backend && pyinstaller pyinstaller.spec",
+    "backend:dev": "cd backend && uvicorn app.main:app --host 127.0.0.1 --port 8765",
+    "test": "PYTHONPATH=backend pytest tests"
+  }
+}

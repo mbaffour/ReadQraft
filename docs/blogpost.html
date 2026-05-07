@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Introducing ReadQraft</title>
+    <meta name="description" content="ReadQraft is a local desktop app for FASTQ quality control, trimming, MultiQC reporting, and reproducibility packages." />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f6f8f9;
+        --paper: #ffffff;
+        --ink: #172027;
+        --muted: #63717d;
+        --line: #dce4e8;
+        --accent: #126c69;
+        --accent-2: #315d9d;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      header {
+        background: #e9f1f1;
+        border-bottom: 1px solid var(--line);
+      }
+      .wrap {
+        width: min(960px, calc(100% - 36px));
+        margin: 0 auto;
+      }
+      .hero {
+        padding: 72px 0 56px;
+      }
+      .eyebrow {
+        color: var(--accent);
+        font-weight: 750;
+        letter-spacing: 0;
+        margin-bottom: 14px;
+      }
+      h1 {
+        font-size: clamp(40px, 7vw, 72px);
+        line-height: .98;
+        letter-spacing: 0;
+        margin: 0 0 18px;
+      }
+      .lede {
+        font-size: 21px;
+        line-height: 1.55;
+        color: var(--muted);
+        max-width: 760px;
+      }
+      main {
+        padding: 42px 0 72px;
+      }
+      article {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: clamp(24px, 4vw, 44px);
+      }
+      h2 {
+        margin-top: 36px;
+        font-size: 26px;
+        letter-spacing: 0;
+      }
+      h2:first-child { margin-top: 0; }
+      p, li {
+        color: var(--muted);
+        line-height: 1.75;
+        font-size: 16px;
+      }
+      strong { color: var(--ink); }
+      .term {
+        color: var(--ink);
+        font-weight: 700;
+      }
+      .bracket {
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .callout {
+        border-left: 4px solid var(--accent);
+        background: #eef6f5;
+        padding: 16px 18px;
+        border-radius: 6px;
+        margin: 24px 0;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin: 20px 0;
+      }
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+        background: #fbfcfd;
+      }
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 17px;
+      }
+      footer {
+        margin-top: 26px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      a { color: var(--accent-2); font-weight: 700; }
+      @media (prefers-color-scheme: dark) {
+        :root { --bg: #12171b; --paper: #1a2228; --ink: #edf4f6; --muted: #a7b4bd; --line: #33414a; }
+        header { background: #172526; }
+        .card, .callout { background: #162026; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap hero">
+        <div class="eyebrow">ReadQraft 0.1.0 MVP</div>
+        <h1>FASTQ QC and trimming without terminal fear.</h1>
+        <p class="lede">ReadQraft is a privacy-preserving desktop app for sequencing read quality control, trimming, MultiQC reporting, and reproducibility documentation on macOS and Windows.</p>
+      </div>
+    </header>
+    <main class="wrap">
+      <article>
+        <h2>Why ReadQraft Exists</h2>
+        <p>Many biologists need reliable <span class="term">FASTQ quality control <span class="bracket">[checking raw sequencing read quality]</span></span> and <span class="term">adapter trimming <span class="bracket">[removing leftover sequencing adapter sequences]</span></span>, but the command line can make a routine QC task feel risky. ReadQraft wraps established bioinformatics tools in a local desktop workflow while preserving proper scientific terminology.</p>
+
+        <div class="callout">
+          <strong>Reads stay local.</strong> ReadQraft runs on the user’s computer. FASTQ files are not uploaded to a cloud service.
+        </div>
+
+        <h2>What The MVP Does</h2>
+        <div class="grid">
+          <div class="card">
+            <h3>Raw QC</h3>
+            <p><span class="term">FastQC <span class="bracket">[checks sequencing read quality]</span></span> runs before trimming.</p>
+          </div>
+          <div class="card">
+            <h3>Trimming</h3>
+            <p><span class="term">fastp</span> is used where available; <span class="term">Cutadapt</span> provides a Windows-native fallback.</p>
+          </div>
+          <div class="card">
+            <h3>Combined Reports</h3>
+            <p><span class="term">MultiQC <span class="bracket">[combines QC reports into one summary]</span></span> aggregates reports.</p>
+          </div>
+          <div class="card">
+            <h3>Reproducibility</h3>
+            <p>Commands, versions, checksums, logs, methods text, and manifests are packaged for publication workflows.</p>
+          </div>
+        </div>
+
+        <h2>Designed For Clarity, Not Oversimplification</h2>
+        <p>The interface uses real terms such as <span class="term">Phred quality threshold <span class="bracket">[base-call confidence cutoff]</span></span>, <span class="term">minimum read length <span class="bracket">[shortest read kept after trimming]</span></span>, and <span class="term">paired-end reads <span class="bracket">[R1 and R2 read files from the same sample]</span></span>. ReadQraft explains terms without replacing them with vague metaphors.</p>
+
+        <h2>Platform Strategy</h2>
+        <p>ReadQraft bundles a local tool environment with the desktop app. macOS builds include FastQC, fastp, Cutadapt, MultiQC, and OpenJDK. Windows builds use FastQC, Cutadapt, MultiQC, Python, and OpenJDK because native Windows fastp packages are not currently available through Bioconda. Every run records the actual trimming engine used.</p>
+
+        <h2>What Comes Next</h2>
+        <p>The next milestones are Windows installer verification, signed and notarized releases, deeper report parsing, tool setup UI polish, and example datasets. The MVP already demonstrates the core promise: local FASTQ QC, trimming, reports, and reproducibility documentation without requiring users to run terminal commands after installation.</p>
+
+        <footer>
+          ReadQraft is open source. See the repository README for setup, packaging, and development details.
+        </footer>
+      </article>
+    </main>
+  </body>
+</html>

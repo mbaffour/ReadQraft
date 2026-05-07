@@ -1,0 +1,29 @@
+name: Build Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install
+      - run: npm run tools:install
+      - run: npm run tools:package
+      - run: pip install -r backend/requirements.txt pyinstaller
+      - run: npm run backend:build
+      - run: npm run frontend:build
+      - run: npm run desktop:dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: readqraft-windows
+          path: desktop/dist/**

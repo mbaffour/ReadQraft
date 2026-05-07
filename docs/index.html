@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ReadQraft</title>
+    <style>
+      body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, sans-serif; color: #172027; background: #f5f7f8; }
+      main { max-width: 1040px; margin: 0 auto; padding: 48px 22px; }
+      header { background: #eaf1f1; border: 1px solid #dbe2e7; border-radius: 8px; padding: 36px; }
+      h1 { font-size: 52px; margin: 0 0 10px; letter-spacing: 0; }
+      p { color: #5f6e79; line-height: 1.7; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 22px; }
+      .card { background: white; border: 1px solid #dbe2e7; border-radius: 8px; padding: 18px; }
+      a { color: #126c69; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>ReadQraft</h1>
+        <p>FASTQ QC and trimming without terminal fear.</p>
+        <p><strong>ReadQraft runs locally on your computer so your sequencing reads stay private.</strong> This GitHub Pages site is for documentation, screenshots, downloads, and demo explanation only. It does not run FastQC in the browser.</p>
+      </header>
+      <section class="grid">
+        <div class="card"><h2>Simple Mode</h2><p>FastQC [checks sequencing read quality], fastp [adapter and quality trimming], post-trim FastQC, MultiQC [combined QC summary], and reproducibility ZIP.</p></div>
+        <div class="card"><h2>Advanced Mode</h2><p>Control Phred quality threshold [base-call confidence cutoff], minimum read length [shortest read kept after trimming], adapters, threads, and logs.</p></div>
+        <div class="card"><h2>Reproducibility</h2><p>Commands, tool versions, checksums, manifest, methods text, session info, and logs are recorded for every analysis.</p></div>
+      </section>
+      <p><a href="blogpost.html">Read the launch announcement</a></p>
+    </main>
+  </body>
+</html>
