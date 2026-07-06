@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+import re
 from enum import Enum
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+# IUPAC nucleotide codes (upper/lower case) accepted for adapter sequences.
+_IUPAC_ADAPTER_PATTERN = re.compile(r"^[ACGTURYSWKMBDHVNacgturyswkmbdhvn]+$")
 
 
 class ToolStatus(BaseModel):
@@ -62,6 +66,21 @@ class RunOptions(BaseModel):
     generate_methods_text: bool = True
     generate_checksums: bool = True
     show_command_preview: bool = False
+
+    @field_validator("adapter_sequence")
+    @classmethod
+    def _validate_adapter_sequence(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        value = value.strip()
+        if not value:
+            return None
+        if not _IUPAC_ADAPTER_PATTERN.match(value):
+            raise ValueError(
+                "adapter_sequence must contain only IUPAC nucleotide codes "
+                "(ACGTURYSWKMBDHVN, upper or lower case)."
+            )
+        return value
 
 
 class RunResponse(BaseModel):

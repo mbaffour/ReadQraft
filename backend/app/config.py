@@ -17,7 +17,9 @@ def data_root() -> Path:
 
 
 def mock_tools_enabled() -> bool:
-    return os.environ.get("READQRAFT_ALLOW_MOCK_TOOLS", "1") == "1"
+    # Default off so mock QC results are never produced silently. Set
+    # READQRAFT_ALLOW_MOCK_TOOLS=1 explicitly to enable development mock mode.
+    return os.environ.get("READQRAFT_ALLOW_MOCK_TOOLS", "0") == "1"
 
 
 def apply_tool_environment() -> None:
