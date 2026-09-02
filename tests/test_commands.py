@@ -14,11 +14,12 @@ def test_fastp_paired_command():
     cmd = fastp_command(sample, Path("/project"), RunOptions())
     assert "--detect_adapter_for_pe" in cmd
     assert "-I" in cmd
-    assert "/project/trimmed/S1_R2.trimmed.fastq.gz" in cmd
+    assert str(Path("/project") / "trimmed" / "S1_R2.trimmed.fastq.gz") in cmd
 
 
 def test_multiqc_command():
-    assert multiqc_command(Path("/project")) == ["python", "-m", "multiqc", "/project", "-o", "/project/multiqc", "--force"]
+    root = Path("/project")
+    assert multiqc_command(root) == ["python", "-m", "multiqc", str(root), "-o", str(root / "multiqc"), "--force"]
 
 
 def test_cutadapt_paired_command():
@@ -28,4 +29,4 @@ def test_cutadapt_paired_command():
     assert "-p" in cmd
     assert "-a" in cmd
     assert "-A" in cmd
-    assert "/project/trimmed/S1_R2.trimmed.fastq.gz" in cmd
+    assert str(Path("/project") / "trimmed" / "S1_R2.trimmed.fastq.gz") in cmd

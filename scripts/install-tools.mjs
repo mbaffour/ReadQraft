@@ -100,6 +100,34 @@ function verifyPythonModule(moduleName, args) {
   return output;
 }
 
+// FastQC on bioconda is a noarch package: a Perl launcher plus a Java jar, with
+// no .exe/.bat shim on win-64. Calling plain `fastqc` from a Windows shell
+// therefore fails even when the install succeeded, which is why the Windows
+// build had been failing at this step since May. Try the launcher through
+// Perl at the locations conda uses on Windows; if none works, record the tool
+// as unavailable instead of aborting the whole build - the backend already
+// degrades to mock QC when fastqc is not available (see pipeline/runner.py).
+function verifyFastqcWindows() {
+  const attempts = [
+    ["fastqc", ["--version"]],
+    ["perl", [join(envDir, "bin", "fastqc"), "--version"]],
+    ["perl", [join(envDir, "Library", "bin", "fastqc"), "--version"]],
+    ["perl", [join(envDir, "Scripts", "fastqc"), "--version"]]
+  ];
+  for (const [command, args] of attempts) {
+    try {
+      const output = commandOutput(command, args, { env: toolEnv(), shell: true });
+      console.log(`fastqc: ${output.split(String.fromCharCode(10))[0].replace(String.fromCharCode(13), "")}  (via ${command})`);
+      return output;
+    } catch {
+      // try the next launcher
+    }
+  }
+  console.warn("fastqc: could not be verified on Windows; recording it as unavailable. " +
+    "ReadQraft will run in mock-QC mode until FastQC is available on PATH.");
+  return "unavailable";
+}
+
 async function main() {
   const platform = platformId();
   const windows = platform === "win-64";
@@ -118,7 +146,7 @@ async function main() {
   }
 
   const versions = {
-    fastqc: verifyTool("fastqc", ["--version"]),
+    fastqc: windows ? verifyFastqcWindows() : verifyTool("fastqc", ["--version"]),
     trimmer: windows ? verifyPythonModule("cutadapt", ["--version"]) : verifyTool("fastp", ["--version"]),
     cutadapt: verifyPythonModule("cutadapt", ["--version"]),
     multiqc: verifyPythonModule("multiqc", ["--version"])
